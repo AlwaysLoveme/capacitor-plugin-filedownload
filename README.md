@@ -9,7 +9,7 @@ npm install capacitor-plugin-filedownload
 npx cap sync
 ```
 eg:
-```js
+```typescript
 import { FileDownload } from "capacitor-plugin-filedownload";
 
 FileDownload.download({
@@ -61,3 +61,5 @@ download(options: FileDownloadOptions) => any
 | **`fileName`** | <code>string</code> |
 
 </docgen-api>
+
+感谢 [https://github.com/veluxa/capacitor-plugin-file-downloader](https://github.com/veluxa/capacitor-plugin-file-downloader)
