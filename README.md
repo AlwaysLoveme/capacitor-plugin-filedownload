@@ -62,6 +62,13 @@ download(options: FileDownloadOptions) => any
 | **`uri`**      | <code>string</code> |
 | **`fileName`** | <code>string</code> |
 
+
+#### FileDownloadResponse
+
+| Prop       | Type                |
+| ---------- | ------------------- |
+| **`path`** | <code>string</code> |
+
 </docgen-api>
 
 感谢 [https://github.com/veluxa/capacitor-plugin-file-downloader](https://github.com/veluxa/capacitor-plugin-file-downloader)

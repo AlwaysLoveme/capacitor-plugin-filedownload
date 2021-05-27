@@ -1,7 +1,10 @@
 export interface FileDownloadPlugin {
-  download(options: FileDownloadOptions): Promise<{ path: string }>;
+  download(options: FileDownloadOptions): Promise<FileDownloadResponse>;
 }
 export interface FileDownloadOptions {
   uri: string;
   fileName: string;
+}
+export interface FileDownloadResponse {
+  path: string;
 }
