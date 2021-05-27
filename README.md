@@ -8,7 +8,21 @@ a file download plugin for Capacitor3
 npm install capacitor-plugin-filedownload
 npx cap sync
 ```
+eg:
+```js
+import { FileDownload } from "capacitor-plugin-filedownload";
 
+FileDownload.download({
+    uri: "http://www.xxxxx.com/file/rvh.apk",
+    fileName: "release.apk"
+}).then((res) => {
+    console.log(res.path);
+}).catch(err => {
+    console.log(err);
+})
+
+···
+```
 ## API
 
 <docgen-index>
