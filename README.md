@@ -11,9 +11,39 @@ npx cap sync
 
 ## API
 
-<docgen-index></docgen-index>
+<docgen-index>
+
+* [`download(...)`](#download)
+* [Interfaces](#interfaces)
+
+</docgen-index>
 
 <docgen-api>
-<!-- run docgen to generate docs from the source -->
-<!-- More info: https://github.com/ionic-team/capacitor-docgen -->
+<!--Update the source file JSDoc comments and rerun docgen to update the docs below-->
+
+### download(...)
+
+```typescript
+download(options: FileDownloadOptions) => any
+```
+
+| Param         | Type                                                                |
+| ------------- | ------------------------------------------------------------------- |
+| **`options`** | <code><a href="#filedownloadoptions">FileDownloadOptions</a></code> |
+
+**Returns:** <code>any</code>
+
+--------------------
+
+
+### Interfaces
+
+
+#### FileDownloadOptions
+
+| Prop           | Type                |
+| -------------- | ------------------- |
+| **`uri`**      | <code>string</code> |
+| **`fileName`** | <code>string</code> |
+
 </docgen-api>

@@ -1,9 +1,9 @@
 import { WebPlugin } from '@capacitor/core';
 
-import type { FileDownloadPlugin } from './definitions';
+import type { FileDownloadPlugin, FileDownloadOptions } from './definitions';
 
 export class FileDownloadWeb extends WebPlugin implements FileDownloadPlugin {
-  async echo(options: { value: string }): Promise<{ value: string }> {
+  async download(options: FileDownloadOptions): Promise<any> {
     console.log('ECHO', options);
     return options;
   }

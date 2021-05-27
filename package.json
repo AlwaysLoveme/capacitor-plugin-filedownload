@@ -17,7 +17,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/AlwaysLoveme/capacitor-plugin-filedownload.git.git"
+    "url": "git+https://github.com/AlwaysLoveme/capacitor-plugin-filedownload.git"
   },
   "bugs": {
     "url": "https://github.com/AlwaysLoveme/capacitor-plugin-filedownload.git/issues"
