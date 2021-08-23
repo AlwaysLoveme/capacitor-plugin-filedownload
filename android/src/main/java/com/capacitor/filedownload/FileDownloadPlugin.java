@@ -39,11 +39,6 @@ public class FileDownloadPlugin extends Plugin {
 
     @PluginMethod
     public void download(PluginCall call) {
-//        String value = call.getString("value");
-//
-//        JSObject ret = new JSObject();
-//        ret.put("value", implementation.echo(value));
-//        call.resolve(ret);
         _call = call;
         mContext = getContext();
         requestPermissions();
@@ -69,11 +64,6 @@ public class FileDownloadPlugin extends Plugin {
         } else {
             Log.d("", "requestMyPermissions: 有读SD权限");
         }
-//        if (!this.hasPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) && !this.hasPermission(Manifest.permission.READ_EXTERNAL_STORAGE)) {
-//            this.pluginRequestPermissions(
-//                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE},
-//                    PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
-//        }
     }
 
     //下载文件

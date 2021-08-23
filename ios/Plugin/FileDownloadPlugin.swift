@@ -27,6 +27,12 @@ public class FileDownloadPlugin: CAPPlugin {
         }
 
         downloadRequest = AF.download(url, to: destination)
+        // 返回下载进度
+        downloadRequest.downloadProgress { progress in
+            self.notifyListeners("downloadProgress", data: [
+                "progress": progress.fractionCompleted
+            ])
+        }
         downloadRequest.responseData(completionHandler: downloadResponse)
     }
 

@@ -30,6 +30,7 @@ FileDownload.download({
 <docgen-index>
 
 * [`download(...)`](#download)
+* [`addListener(...)`](#addlistener)
 * [Interfaces](#interfaces)
 
 </docgen-index>
@@ -52,6 +53,22 @@ download(options: FileDownloadOptions) => any
 --------------------
 
 
+### addListener(...)
+
+```typescript
+addListener(eventName: 'downloadProgress', listenerFunc: (progress: FileDownloadProgress) => void) => Promise<PluginListenerHandle> & PluginListenerHandle
+```
+
+| Param              | Type                                                                                         |
+| ------------------ | -------------------------------------------------------------------------------------------- |
+| **`eventName`**    | <code>"downloadProgress"</code>                                                              |
+| **`listenerFunc`** | <code>(progress: <a href="#filedownloadprogress">FileDownloadProgress</a>) =&gt; void</code> |
+
+**Returns:** <code>any</code>
+
+--------------------
+
+
 ### Interfaces
 
 
@@ -68,6 +85,20 @@ download(options: FileDownloadOptions) => any
 | Prop       | Type                |
 | ---------- | ------------------- |
 | **`path`** | <code>string</code> |
+
+
+#### FileDownloadProgress
+
+| Prop           | Type                |
+| -------------- | ------------------- |
+| **`progress`** | <code>number</code> |
+
+
+#### PluginListenerHandle
+
+| Prop         | Type                      |
+| ------------ | ------------------------- |
+| **`remove`** | <code>() =&gt; any</code> |
 
 </docgen-api>
 
