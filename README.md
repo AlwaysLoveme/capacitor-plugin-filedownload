@@ -1,6 +1,6 @@
 # capacitor-plugin-filedownload
 
-a file download plugin for Capacitor3
+a simple file download plugin for Capacitor3
 
 ![android](https://img.shields.io/badge/android-pass-green) 
 ![ios](https://img.shields.io/badge/ios-pass-green)
