@@ -1,6 +1,6 @@
 {
   "name": "capacitor-plugin-filedownload",
-  "version": "0.0.1",
+  "version": "1.0.3",
   "description": "a file download plugin for capacitor3.0+",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
@@ -25,7 +25,8 @@
   "keywords": [
     "capacitor",
     "plugin",
-    "native"
+    "native",
+    "download"
   ],
   "scripts": {
     "verify": "npm run verify:ios && npm run verify:android && npm run verify:web",
