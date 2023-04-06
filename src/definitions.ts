@@ -8,6 +8,14 @@ export interface FileDownloadPlugin {
 export interface FileDownloadOptions {
   uri: string;
   fileName: string;
+  /**
+   * Downloader Title， Only Android
+   */
+  downloadTitle?: string;
+  /**
+   * Downloader Description， Only Android
+   */
+  downloadDescription?: string;
 }
 export interface FileDownloadResponse {
   path: string;

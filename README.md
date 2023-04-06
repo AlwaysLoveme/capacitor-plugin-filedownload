@@ -27,7 +27,11 @@ import { FileDownload } from "capacitor-plugin-filedownload";
 
 FileDownload.download({
   uri: "http://www.xxxxx.com/file/rvh.apk",
-  fileName: "release.apk"
+  fileName: "release.apk",
+  // only works on Android
+  downloadTitle: 'downloading',
+  // only works on Android
+  downloadDescription: 'file is downloading',
 }).then((res) => {
   console.log(res.path);
 }).catch(err => {
@@ -101,10 +105,12 @@ addListener(eventName: 'downloadProgress', listenerFunc: (progress: FileDownload
 
 #### FileDownloadOptions
 
-| Prop           | Type                |
-| -------------- | ------------------- |
-| **`uri`**      | <code>string</code> |
-| **`fileName`** | <code>string</code> |
+| Prop                      | Type                | Description     |
+| ------------------------- | ------------------- | --------------- |
+| **`uri`**                 | <code>string</code> |                 |
+| **`fileName`**            | <code>string</code> |                 |
+| **`downloadTitle`**       | <code>string</code> | 下载器标题 仅 Android |
+| **`downloadDescription`** | <code>string</code> | 下载器描述 仅 Android |
 
 
 #### PluginListenerHandle

@@ -34,7 +34,7 @@ public class FileDownloadPlugin extends Plugin {
     private Context mContext;
     //下载的ID
     private long downloadId;
-    private String pathstr;
+    private String pathStr;
 
     PluginCall _call;
 
@@ -71,6 +71,8 @@ public class FileDownloadPlugin extends Plugin {
     private void downloadFile(final PluginCall call) {
         String url = call.getString("uri","");
         String fileName = call.getString("fileName","");
+        String downloadTitle = call.getString("downloadTitle", "文件下载器");
+        String downloadDescription = call.getString("downloadDescription", "下载中...");
 
         //创建下载任务
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
@@ -78,15 +80,15 @@ public class FileDownloadPlugin extends Plugin {
         request.setAllowedOverRoaming(false);
         //在通知栏中显示，默认就是显示的
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);
-        request.setTitle("文件下载器");
-        request.setDescription(fileName + "下载中...");
+        request.setTitle(downloadTitle);
+        request.setDescription(fileName + downloadDescription);
         request.setVisibleInDownloadsUi(true);
 
         //设置下载的路径
         assert fileName != null;
         File file = new File(mContext.getExternalFilesDir(""), fileName);
         request.setDestinationUri(Uri.fromFile(file));
-        pathstr = file.getAbsolutePath();
+        pathStr = file.getAbsolutePath();
 
         //获取DownloadManager
         if (downloadManager == null)
@@ -131,14 +133,14 @@ public class FileDownloadPlugin extends Plugin {
                     //下载完成
                     cursor.close();
                     JSObject ret = new JSObject();
-                    ret.put("path", "file://" + pathstr);
+                    ret.put("path", "file://" + pathStr);
                     _call.resolve(ret);
                     break;
                 //下载失败
                 case DownloadManager.STATUS_FAILED:
                     cursor.close();
                     mContext.unregisterReceiver(receiver);
-                    _call.reject("下载失败,请检查URL是否正确");
+                    _call.reject("Download failed, please check if the URL is correct");
                     break;
             }
         }
