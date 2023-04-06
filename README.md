@@ -105,12 +105,12 @@ addListener(eventName: 'downloadProgress', listenerFunc: (progress: FileDownload
 
 #### FileDownloadOptions
 
-| Prop                      | Type                | Description     |
-| ------------------------- | ------------------- | --------------- |
-| **`uri`**                 | <code>string</code> |                 |
-| **`fileName`**            | <code>string</code> |                 |
-| **`downloadTitle`**       | <code>string</code> | 下载器标题 仅 Android |
-| **`downloadDescription`** | <code>string</code> | 下载器描述 仅 Android |
+| Prop                      | Type                | Description                          |
+| ------------------------- | ------------------- | ------------------------------------ |
+| **`uri`**                 | <code>string</code> |                                      |
+| **`fileName`**            | <code>string</code> |                                      |
+| **`downloadTitle`**       | <code>string</code> | Downloader Title， Only Android       |
+| **`downloadDescription`** | <code>string</code> | Downloader Description， Only Android |
 
 
 #### PluginListenerHandle
