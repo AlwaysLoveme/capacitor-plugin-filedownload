@@ -91,6 +91,9 @@ https://github.com/capacitor-community/file-opener
 * [`download(...)`](#download)
 * [`cancel()`](#cancel)
 * [`isCanceled()`](#iscanceled)
+* [`checkPermissions()`](#checkpermissions)
+* [`requestPermissions()`](#requestpermissions)
+* [`openSetting()`](#opensetting)
 * [`addListener('downloadProgress', ...)`](#addlistenerdownloadprogress)
 * [Interfaces](#interfaces)
 * [Type Aliases](#type-aliases)
@@ -135,6 +138,43 @@ isCanceled() => Promise<CancelStatus>
 get status of download
 
 **Returns:** <code>Promise&lt;<a href="#cancelstatus">CancelStatus</a>&gt;</code>
+
+--------------------
+
+
+### checkPermissions()
+
+```typescript
+checkPermissions() => Promise<PermissionStatus>
+```
+
+only for android
+
+**Returns:** <code>Promise&lt;<a href="#permissionstatus">PermissionStatus</a>&gt;</code>
+
+--------------------
+
+
+### requestPermissions()
+
+```typescript
+requestPermissions() => Promise<PermissionStatus>
+```
+
+only for android
+
+**Returns:** <code>Promise&lt;<a href="#permissionstatus">PermissionStatus</a>&gt;</code>
+
+--------------------
+
+
+### openSetting()
+
+```typescript
+openSetting() => Promise<void>
+```
+
+open app setting, only for android
 
 --------------------
 
@@ -185,6 +225,13 @@ addListener(eventName: 'downloadProgress', listenerFunc: (progress: FileDownload
 | **`isCanceled`** | <code>boolean</code> |
 
 
+#### PermissionStatus
+
+| Prop          | Type                                                        | Description                                                                  |
+| ------------- | ----------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| **`storage`** | <code><a href="#permissionstate">PermissionState</a></code> | prompt: 首次申请，询问。 prompt-with-rationale： 每次都询问。 granted： 已获取权限。 denied：权限已拒绝。 |
+
+
 #### PluginListenerHandle
 
 | Prop         | Type                                      |
@@ -213,6 +260,13 @@ download destination , on android default is "DOWNLOAD", on ios default is "DOCU
 
 Construct a type with a set of properties K of type T
 
-<code>{ [P in K]: T; }</code>
+<code>{
+ [P in K]: T;
+ }</code>
+
+
+#### PermissionState
+
+<code>'prompt' | 'prompt-with-rationale' | 'granted' | 'denied'</code>
 
 </docgen-api>
