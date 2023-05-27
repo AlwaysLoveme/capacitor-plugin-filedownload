@@ -88,12 +88,12 @@ https://github.com/capacitor-community/file-opener
 
 <docgen-index>
 
-- [`download(...)`](#download)
-- [`cancel()`](#cancel)
-- [`isCanceled()`](#iscanceled)
-- [`addListener('downloadProgress', ...)`](#addlistenerdownloadprogress)
-- [Interfaces](#interfaces)
-- [Type Aliases](#type-aliases)
+* [`download(...)`](#download)
+* [`cancel()`](#cancel)
+* [`isCanceled()`](#iscanceled)
+* [`addListener('downloadProgress', ...)`](#addlistenerdownloadprogress)
+* [Interfaces](#interfaces)
+* [Type Aliases](#type-aliases)
 
 </docgen-index>
 
@@ -112,7 +112,8 @@ download(options: FileDownloadOptions) => Promise<FileDownloadResponse>
 
 **Returns:** <code>Promise&lt;<a href="#filedownloadresponse">FileDownloadResponse</a>&gt;</code>
 
----
+--------------------
+
 
 ### cancel()
 
@@ -122,19 +123,21 @@ cancel() => Promise<void>
 
 cancel download
 
----
+--------------------
+
 
 ### isCanceled()
 
 ```typescript
-isCanceled() => Promise<boolean>
+isCanceled() => Promise<CancelStatus>
 ```
 
 get status of download
 
-**Returns:** <code>Promise&lt;boolean&gt;</code>
+**Returns:** <code>Promise&lt;<a href="#cancelstatus">CancelStatus</a>&gt;</code>
 
----
+--------------------
+
 
 ### addListener('downloadProgress', ...)
 
@@ -149,15 +152,18 @@ addListener(eventName: 'downloadProgress', listenerFunc: (progress: FileDownload
 
 **Returns:** <code>Promise&lt;<a href="#pluginlistenerhandle">PluginListenerHandle</a>&gt; & <a href="#pluginlistenerhandle">PluginListenerHandle</a></code>
 
----
+--------------------
+
 
 ### Interfaces
+
 
 #### FileDownloadResponse
 
 | Prop       | Type                |
 | ---------- | ------------------- |
 | **`path`** | <code>string</code> |
+
 
 #### FileDownloadOptions
 
@@ -168,8 +174,16 @@ addListener(eventName: 'downloadProgress', listenerFunc: (progress: FileDownload
 | **`destination`**         | <code><a href="#destination">Destination</a></code>              | Download file destination                                                        | <code>ios default: Documents</code> |
 | **`headers`**             | <code><a href="#record">Record</a>&lt;string, string&gt;</code>  | request headers, when headers has value, url must be a ajax url with POST method |                                     |
 | **`body`**                | <code><a href="#record">Record</a>&lt;string, unknown&gt;</code> | request body, when body has value, url must be a ajax url width POST method      |                                     |
-| **`downloadTitle`**       | <code>string</code>                                              | Downloader Title， Only Android                                                  |                                     |
-| **`downloadDescription`** | <code>string</code>                                              | Downloader Description， Only Android                                            |                                     |
+| **`downloadTitle`**       | <code>string</code>                                              | Downloader Title， Only Android                                                   |                                     |
+| **`downloadDescription`** | <code>string</code>                                              | Downloader Description， Only Android                                             |                                     |
+
+
+#### CancelStatus
+
+| Prop             | Type                 |
+| ---------------- | -------------------- |
+| **`isCanceled`** | <code>boolean</code> |
+
 
 #### PluginListenerHandle
 
@@ -177,13 +191,16 @@ addListener(eventName: 'downloadProgress', listenerFunc: (progress: FileDownload
 | ------------ | ----------------------------------------- |
 | **`remove`** | <code>() =&gt; Promise&lt;void&gt;</code> |
 
+
 #### FileDownloadProgress
 
 | Prop           | Type                |
 | -------------- | ------------------- |
 | **`progress`** | <code>number</code> |
 
+
 ### Type Aliases
+
 
 #### Destination
 
@@ -191,12 +208,11 @@ download destination , default is "Download"
 
 <code>"DOCUMENT" | "EXTERNAL" | "EXTERNAL_STORAGE" | "DATA" | "CACHE"</code>
 
+
 #### Record
 
 Construct a type with a set of properties K of type T
 
-<code>{
-[P in K]: T;
-}</code>
+<code>{ [P in K]: T; }</code>
 
 </docgen-api>

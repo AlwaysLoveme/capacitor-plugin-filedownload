@@ -1,6 +1,7 @@
 import { WebPlugin } from '@capacitor/core';
 
 import type {
+  CancelStatus,
   FileDownloadPlugin,
   FileDownloadOptions,
   FileDownloadResponse,
@@ -14,7 +15,9 @@ export class FileDownloadWeb extends WebPlugin implements FileDownloadPlugin {
   async cancel(): Promise<void> {
     return;
   }
-  async isCanceled(): Promise<boolean> {
-    return false;
+  async isCanceled(): Promise<CancelStatus> {
+    return {
+      isCanceled: false
+    };
   }
 }
