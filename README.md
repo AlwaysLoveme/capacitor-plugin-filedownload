@@ -15,6 +15,10 @@
 </p>
 a file download plugin for capacitor3.0+
 
+> not support Capacitor5
+
+> since version 1.0.6, the `uri` change to `url`
+
 ## Install
 
 ```bash
@@ -55,6 +59,7 @@ https://github.com/capacitor-community/file-opener
 
 * [`download(...)`](#download)
 * [`cancel()`](#cancel)
+* [`isCanceled()`](#iscanceled)
 * [`addListener('downloadProgress', ...)`](#addlistenerdownloadprogress)
 * [Interfaces](#interfaces)
 * [Type Aliases](#type-aliases)
@@ -84,6 +89,21 @@ download(options: FileDownloadOptions) => Promise<FileDownloadResponse>
 ```typescript
 cancel() => Promise<void>
 ```
+
+cancel download
+
+--------------------
+
+
+### isCanceled()
+
+```typescript
+isCanceled() => Promise<boolean>
+```
+
+get status of download
+
+**Returns:** <code>Promise&lt;boolean&gt;</code>
 
 --------------------
 
@@ -155,6 +175,8 @@ download destination , default is "Download"
 
 Construct a type with a set of properties K of type T
 
-<code>{ [P in K]: T; }</code>
+<code>{
+ [P in K]: T;
+ }</code>
 
 </docgen-api>
