@@ -21,7 +21,7 @@ export interface CancelStatus {
 }
 
 /**
- * download destination , default is "Download"
+ * download destination , on android default is "DOWNLOAD", on ios default is "DOCUMENT"
  */
 export type Destination = "DOCUMENT" | "EXTERNAL" | "EXTERNAL_STORAGE" | "DATA" | "CACHE";
 

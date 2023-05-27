@@ -204,7 +204,7 @@ addListener(eventName: 'downloadProgress', listenerFunc: (progress: FileDownload
 
 #### Destination
 
-download destination , default is "Download"
+download destination , on android default is "DOWNLOAD", on ios default is "DOCUMENT"
 
 <code>"DOCUMENT" | "EXTERNAL" | "EXTERNAL_STORAGE" | "DATA" | "CACHE"</code>
 
