@@ -7,8 +7,14 @@ import type {
 } from './definitions';
 
 export class FileDownloadWeb extends WebPlugin implements FileDownloadPlugin {
-  async download(options?: FileDownloadOptions): Promise<FileDownloadResponse> {
-    console.log('配置项', options);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async download(_options?: FileDownloadOptions): Promise<FileDownloadResponse> {
     return { path: '' };
+  }
+  async cancel(): Promise<void> {
+    return;
+  }
+  async isCanceled(): Promise<boolean> {
+    return false;
   }
 }

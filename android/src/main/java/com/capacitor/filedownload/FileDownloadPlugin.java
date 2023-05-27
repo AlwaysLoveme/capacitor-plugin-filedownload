@@ -1,19 +1,17 @@
 package com.capacitor.filedownload;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Iterator;
+
 import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.DownloadManager;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.net.Uri;
+import android.os.Environment;
 import android.util.Log;
 
-
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -22,127 +20,239 @@ import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.CapacitorPlugin;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
+import org.json.JSONException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 @CapacitorPlugin(name = "FileDownload")
 public class FileDownloadPlugin extends Plugin {
 
     private FileDownload implementation = new FileDownload();
 
-    //下载器
-    private DownloadManager downloadManager;
-    private Context mContext;
-    //下载的ID
-    private long downloadId;
+    private OkHttpClient okHttpClient;
     private String pathStr;
 
-    PluginCall _call;
+    private Call downloadInstance;
+
+
+    @Override
+    public void load() {
+        okHttpClient = new OkHttpClient.Builder().build();
+        requestPermissions();
+    }
 
     @PluginMethod
-    public void download(PluginCall call) {
-        _call = call;
-        mContext = getContext();
-        requestPermissions();
+    public void download(PluginCall call) throws JSONException {
         downloadFile(call);
     }
 
-     //获取权限
+    @PluginMethod
+    public void cancel(PluginCall call) {
+        if (downloadInstance != null && !downloadInstance.isCanceled()) {
+            downloadInstance.cancel();
+            call.resolve();
+        }
+        call.reject("can not be canceled");
+    }
+
+    @PluginMethod
+    public void isCanceled(PluginCall call) {
+        JSObject ret = new JSObject();
+        if(downloadInstance != null) {
+            ret.put("isCanceled", downloadInstance.isCanceled());
+            call.resolve(ret);
+        }
+    }
+
     private void requestPermissions() {
         int PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 10001;
-        if (ContextCompat.checkSelfPermission(mContext,
+        if (ContextCompat.checkSelfPermission(getContext(),
                 Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
-            //没有授权，编写申请权限代码
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
         } else {
             Log.d("", "requestMyPermissions: 有写SD权限");
         }
-        if (ContextCompat.checkSelfPermission(mContext,
+        if (ContextCompat.checkSelfPermission(getContext(),
                 Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
-            //没有授权，编写申请权限代码
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
         } else {
             Log.d("", "requestMyPermissions: 有读SD权限");
         }
     }
 
-    //下载文件
-    private void downloadFile(final PluginCall call) {
-        String url = call.getString("uri","");
-        String fileName = call.getString("fileName","");
-        String downloadTitle = call.getString("downloadTitle", "文件下载器");
-        String downloadDescription = call.getString("downloadDescription", "下载中...");
+    private void downloadFile(final PluginCall call) throws JSONException {
+        String url = call.getString("url", "");
+        final String fileName = call.getString("fileName", "");
+        String destination = call.getString("destination", "DOCUMENT");
 
-        //创建下载任务
-        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
-        //移动网络情况下是否允许漫游
-        request.setAllowedOverRoaming(false);
-        //在通知栏中显示，默认就是显示的
-        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);
-        request.setTitle(downloadTitle);
-        request.setDescription(fileName + downloadDescription);
-        request.setVisibleInDownloadsUi(true);
+        assert url != null;
+        if (url.isEmpty()) {
+            call.reject("URL is required");
+            return;
+        }
 
-        //设置下载的路径
+
         assert fileName != null;
-        File file = new File(mContext.getExternalFilesDir(""), fileName);
-        request.setDestinationUri(Uri.fromFile(file));
-        pathStr = file.getAbsolutePath();
-
-        //获取DownloadManager
-        if (downloadManager == null)
-            downloadManager = (DownloadManager) mContext.getSystemService(Context.DOWNLOAD_SERVICE);
-        //将下载请求加入下载队列，加入下载队列后会给该任务返回一个long型的id，通过该id可以取消任务，重启任务、获取下载的文件等等
-        if (downloadManager != null) {
-            downloadId = downloadManager.enqueue(request);
+        if (fileName.isEmpty()) {
+            call.reject("File name is required");
+            return;
         }
 
-        //注册广播接收者，监听下载状态
-        mContext.registerReceiver(receiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
-    }
+        Request.Builder requestBuilder = new Request.Builder().url(url);
 
-    //广播监听下载的各个状态
-    private final BroadcastReceiver receiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            checkStatus();
-        }
-    };
-
-    //检查下载状态
-    private void checkStatus() {
-        DownloadManager.Query query = new DownloadManager.Query();
-        //通过下载的id查找
-        query.setFilterById(downloadId);
-        Cursor cursor = downloadManager.query(query);
-        if (cursor.moveToFirst()) {
-            @SuppressLint("Range") int status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS));
-            switch (status) {
-                //下载暂停
-                case DownloadManager.STATUS_PAUSED:
-                    break;
-                //下载延迟
-                case DownloadManager.STATUS_PENDING:
-                    break;
-                //正在下载
-                case DownloadManager.STATUS_RUNNING:
-                    break;
-                //下载完成
-                case DownloadManager.STATUS_SUCCESSFUL:
-                    //下载完成
-                    cursor.close();
-                    JSObject ret = new JSObject();
-                    ret.put("path", "file://" + pathStr);
-                    _call.resolve(ret);
-                    break;
-                //下载失败
-                case DownloadManager.STATUS_FAILED:
-                    cursor.close();
-                    mContext.unregisterReceiver(receiver);
-                    _call.reject("Download failed, please check if the URL is correct");
-                    break;
+        //设置请求头
+        JSObject headers = call.getObject("headers");
+        if (headers != null) {
+            for (Iterator<String> it = headers.keys(); it.hasNext(); ) {
+                String key = it.next();
+                String value = headers.getString(key);
+                assert value != null;
+                requestBuilder.addHeader(key, value);
             }
         }
+
+        // 设置请求体
+        JSObject requestBodyObject = call.getObject("body", null);
+        if (requestBodyObject != null) {
+            JsonObject jsonObject = new JsonObject();
+            for (Iterator<String> it = requestBodyObject.keys(); it.hasNext(); ) {
+                String key = it.next();
+                Object value = requestBodyObject.get(key);
+                if (value instanceof String) {
+                    jsonObject.addProperty(key, (String) value);
+                } else if (value instanceof Number) {
+                    jsonObject.addProperty(key, (Number) value);
+                } else if (value instanceof Boolean) {
+                    jsonObject.addProperty(key, (Boolean) value);
+                } else if (value instanceof Character) {
+                    jsonObject.addProperty(key, (Character) value);
+                }
+            }
+
+            Gson gson = new Gson();
+            String jsonBody = gson.toJson(jsonObject);
+
+            RequestBody requestBody = RequestBody.create(jsonBody, MediaType.parse("application/json"));
+            requestBuilder.method("POST", requestBody);
+        }
+
+        Request request = requestBuilder.build();
+
+        downloadInstance = okHttpClient.newCall(request);
+        downloadInstance.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call __call, @NonNull IOException e) {
+                call.reject("download fail: " + e.getMessage());
+                downloadInstance.cancel();
+            }
+
+            @Override
+            public void onResponse(@NonNull Call __call, @NonNull Response response) throws IOException {
+                if (!response.isSuccessful()) {
+                    call.reject("Unexpected code " + response);
+                    return;
+                }
+
+                ResponseBody responseBody = response.body();
+                if (responseBody == null) {
+                    call.reject("Download failed: Response body is null");
+                    return;
+                }
+
+                if (downloadInstance.isCanceled()) {
+                    return;
+                }
+
+                try {
+                    assert destination != null;
+                    File downloadDestination = getDefaultDownloadDestination(destination);
+                    File file = new File(downloadDestination, fileName);
+                    pathStr = file.getAbsolutePath();
+                    File parentDir = file.getParentFile();
+                    if (parentDir != null && !parentDir.exists()) {
+                        if (!parentDir.mkdirs()) {
+                            call.reject("Failed to create parent directory");
+                            return;
+                        }
+                    }
+
+
+                    assert response.body() != null;
+                    InputStream inputStream = response.body().byteStream();
+                    FileOutputStream outputStream = new FileOutputStream(file);
+                    byte[] buffer = new byte[4096];
+                    int length;
+                    long downloadedBytes = 0;
+                    long totalBytes = response.body().contentLength();
+                    while ((length = inputStream.read(buffer)) != -1) {
+                        outputStream.write(buffer, 0, length);
+                        downloadedBytes += length;
+                        int progress = (int) (downloadedBytes * 100 / totalBytes);
+                        notifyProgress(progress);
+                    }
+                    outputStream.flush();
+                    outputStream.close();
+                    inputStream.close();
+
+                    call.resolve(createSuccessResponse());
+                } catch (IOException e) {
+                    call.reject("download fail: " + e.getMessage());
+                    __call.cancel();
+                }
+            }
+        });
+    }
+
+    private File getDefaultDownloadDestination(String destination) {
+        File downloadDestination;
+        switch (destination) {
+            case "DOCUMENT":
+                downloadDestination = getContext().getExternalFilesDir("");
+                break;
+            case "EXTERNAL":
+            case "EXTERNAL_STORAGE":
+                downloadDestination = Environment.getExternalStorageDirectory();
+                break;
+            case "DATA":
+                downloadDestination = getContext().getFilesDir();
+                break;
+            case "CACHE":
+                downloadDestination = getContext().getCacheDir();
+                break;
+            default:
+                downloadDestination = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+                break;
+        }
+
+        if (!downloadDestination.exists()) {
+            downloadDestination.mkdirs();
+        }
+
+        return downloadDestination;
+    }
+
+    private void notifyProgress(int progress) {
+        JSObject progressObj = new JSObject();
+        progressObj.put("progress", progress);
+        notifyListeners("downloadProgress", progressObj);
+    }
+
+    private JSObject createSuccessResponse() {
+        JSObject response = new JSObject();
+        response.put("success", true);
+        response.put("path", "file://" + pathStr);
+        return response;
     }
 }

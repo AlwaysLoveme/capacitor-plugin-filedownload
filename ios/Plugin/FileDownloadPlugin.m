@@ -7,4 +7,6 @@
 // each method the plugin supports using the CAP_PLUGIN_METHOD macro.
 CAP_PLUGIN(FileDownloadPlugin, "FileDownload",
            CAP_PLUGIN_METHOD(download, CAPPluginReturnPromise);
+           CAP_PLUGIN_METHOD(cancel, CAPPluginReturnPromise);
+           CAP_PLUGIN_METHOD(isCanceled, CAPPluginReturnPromise);
 )
