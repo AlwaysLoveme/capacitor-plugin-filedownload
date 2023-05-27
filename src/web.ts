@@ -5,9 +5,13 @@ import type {
   FileDownloadPlugin,
   FileDownloadOptions,
   FileDownloadResponse,
+  PermissionStatus,
 } from './definitions';
 
 export class FileDownloadWeb extends WebPlugin implements FileDownloadPlugin {
+  openSetting(): Promise<void> {
+    throw new Error('Method not implemented onWeb.');
+  }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async download(_options?: FileDownloadOptions): Promise<FileDownloadResponse> {
     return { path: '' };
@@ -19,5 +23,15 @@ export class FileDownloadWeb extends WebPlugin implements FileDownloadPlugin {
     return {
       isCanceled: false
     };
+  }
+  async checkPermissions(): Promise<PermissionStatus> {
+    return {
+      storage: "prompt"
+    }
+  }
+  async requestPermissions(): Promise<PermissionStatus> {
+    return {
+      storage: "prompt"
+    }
   }
 }

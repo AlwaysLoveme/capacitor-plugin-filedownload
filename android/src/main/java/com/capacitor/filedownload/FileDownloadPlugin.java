@@ -7,8 +7,13 @@ import java.io.InputStream;
 import java.util.Iterator;
 
 import android.Manifest;
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
+import android.provider.Settings;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -16,10 +21,13 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.getcapacitor.JSObject;
+import com.getcapacitor.PermissionState;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.CapacitorPlugin;
+import com.getcapacitor.annotation.Permission;
+import com.getcapacitor.annotation.PermissionCallback;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
@@ -34,8 +42,27 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
-@CapacitorPlugin(name = "FileDownload")
+@CapacitorPlugin(name = "FileDownload", permissions = {
+        // SDK VERSIONS 32 AND BELOW
+        @Permission(
+                alias = FileDownloadPlugin.STORAGE,
+                strings = {
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                }
+        ),
+        /*
+        SDK VERSIONS 33 AND ABOVE
+        This alias is a placeholder and the PHOTOS alias will be updated to use these permissions
+        so that the end user does not need to explicitly use separate aliases depending
+        on the SDK version.
+         */
+        //@Permission(strings = { Manifest.permission.READ_MEDIA_IMAGES }, alias = CameraPlugin.MEDIA)
+})
 public class FileDownloadPlugin extends Plugin {
+
+    static final String STORAGE = "storage";
+    static final String MEDIA = "media";
 
     private FileDownload implementation = new FileDownload();
 
@@ -48,48 +75,71 @@ public class FileDownloadPlugin extends Plugin {
     @Override
     public void load() {
         okHttpClient = new OkHttpClient.Builder().build();
-        requestPermissions();
     }
 
     @PluginMethod
     public void download(PluginCall call) throws JSONException {
         downloadFile(call);
+//        Log.d("权限", getPermissionState(STORAGE) + "");
+//        if(getPermissionState(STORAGE) != PermissionState.GRANTED && getPermissionState(STORAGE) != PermissionState.DENIED) {
+//            requestPermissionForAlias(STORAGE, call, "permissionsCallback");
+//        } else {
+//
+//        }
     }
 
     @PluginMethod
     public void cancel(PluginCall call) {
         if (downloadInstance != null && !downloadInstance.isCanceled()) {
             downloadInstance.cancel();
-            call.resolve();
         }
-        call.reject("can not be canceled");
+        call.resolve();
     }
 
     @PluginMethod
     public void isCanceled(PluginCall call) {
         JSObject ret = new JSObject();
-        if(downloadInstance != null) {
+        if (downloadInstance != null) {
             ret.put("isCanceled", downloadInstance.isCanceled());
             call.resolve(ret);
         }
     }
 
-    private void requestPermissions() {
-        int PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 10001;
-        if (ContextCompat.checkSelfPermission(getContext(),
-                Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+    @PluginMethod
+    public void checkPermissions(PluginCall call) {
+        if (getPermissionState(STORAGE) == PermissionState.GRANTED) {
+            JSObject permissionsResultJSON = new JSObject();
+            permissionsResultJSON.put(STORAGE, "granted");
+            call.resolve(permissionsResultJSON);
         } else {
-            Log.d("", "requestMyPermissions: 有写SD权限");
+            super.checkPermissions(call);
         }
-        if (ContextCompat.checkSelfPermission(getContext(),
-                Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+    }
+
+    @PluginMethod
+    public void requestPermissions(PluginCall call) {
+        if (getPermissionState(STORAGE) == PermissionState.GRANTED) {
+            JSObject permissionsResultJSON = new JSObject();
+            permissionsResultJSON.put(STORAGE, "granted");
+            call.resolve(permissionsResultJSON);
         } else {
-            Log.d("", "requestMyPermissions: 有读SD权限");
+            requestPermissionForAlias(STORAGE, call, "permissionsCallback");
         }
+    }
+
+    @PermissionCallback
+    private void permissionsCallback(PluginCall call) {
+        this.checkPermissions(call);
+    }
+
+    @PluginMethod
+    public void openSetting(PluginCall call) {
+        Context context = getContext();
+        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        Uri uri = Uri.fromParts("package", context.getPackageName(), null);
+        intent.setData(uri);
+        context.startActivity(intent);
+        call.resolve();
     }
 
     private void downloadFile(final PluginCall call) throws JSONException {

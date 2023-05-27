@@ -10,10 +10,32 @@ export interface FileDownloadPlugin {
    * get status of download
    */
   isCanceled(): Promise<CancelStatus>;
+  /**
+   * only for android
+   */
+  checkPermissions(): Promise<PermissionStatus>;
+  /**
+   * only for android
+   */
+  requestPermissions(): Promise<PermissionStatus>;
+  /**
+   * open app setting, only for android
+   */
+  openSetting(): Promise<void>;
   addListener(
     eventName: 'downloadProgress',
     listenerFunc: (progress: FileDownloadProgress) => void,
   ): Promise<PluginListenerHandle> & PluginListenerHandle;
+}
+
+export interface PermissionStatus {
+  /**
+   * prompt: 首次申请，询问。
+   * prompt-with-rationale： 每次都询问。
+   * granted： 已获取权限。
+   * denied：权限已拒绝。
+   */
+  storage: PermissionState;
 }
 
 export interface CancelStatus {
