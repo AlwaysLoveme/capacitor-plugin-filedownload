@@ -9,11 +9,15 @@ export interface FileDownloadPlugin {
   /**
    * get status of download
    */
-  isCanceled(): Promise<boolean>;
+  isCanceled(): Promise<CancelStatus>;
   addListener(
     eventName: 'downloadProgress',
     listenerFunc: (progress: FileDownloadProgress) => void,
   ): Promise<PluginListenerHandle> & PluginListenerHandle;
+}
+
+export interface CancelStatus {
+  isCanceled: boolean
 }
 
 /**
