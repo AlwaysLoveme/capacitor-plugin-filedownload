@@ -35,11 +35,11 @@ export interface FileDownloadOptions {
    */
   destination?: Destination;
   /**
-   * request headers, when headers has value, url must be a ajax url with POST method
+   * request headers, when headers has value, url must be a http request with POST method
    */
   headers?: Record<string, string>,
   /**
-   * request body, when body has value, url must be a ajax url width POST method
+   * request body, when body has value, url must be a http request width POST method
    */
   body?: Record<string, unknown>,
   /**
