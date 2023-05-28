@@ -49,8 +49,6 @@ public class FileDownloadPlugin: CAPPlugin {
     
     func getFileDirectory(destination: String) -> FileManager.SearchPathDirectory {
         switch destination {
-        case "DOCUMENT", "DATA", "EXTERNAL", "EXTERNAL_STORAGE":
-            return .documentDirectory
         case "LIBRARY":
             return .libraryDirectory
         case "CACHE":
