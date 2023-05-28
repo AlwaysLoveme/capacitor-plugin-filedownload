@@ -45,15 +45,15 @@ export interface CancelStatus {
 /**
  * download destination , on android default is "DOWNLOAD", on ios default is "DOCUMENT"
  */
-export type Destination = "DOCUMENT" | "EXTERNAL" | "EXTERNAL_STORAGE" | "DATA" | "CACHE";
+export type Destination = "DOCUMENT" | "EXTERNAL" | "EXTERNAL_STORAGE" | "DATA" | "CACHE" | "LIBRARY";
 
 export interface FileDownloadOptions {
   url: string;
   fileName: string;
   /**
    * Download file destination
-   * @default ios default: Documents
-   * @default android default: External Storage
+   * @default ios default: Document
+   * android default: External Storage
    */
   destination?: Destination;
   /**

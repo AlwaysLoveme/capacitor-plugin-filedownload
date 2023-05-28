@@ -207,15 +207,15 @@ addListener(eventName: 'downloadProgress', listenerFunc: (progress: FileDownload
 
 #### FileDownloadOptions
 
-| Prop                      | Type                                                             | Description                                                                          | Default                             |
-| ------------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------------------------------ | ----------------------------------- |
-| **`url`**                 | <code>string</code>                                              |                                                                                      |                                     |
-| **`fileName`**            | <code>string</code>                                              |                                                                                      |                                     |
-| **`destination`**         | <code><a href="#destination">Destination</a></code>              | Download file destination                                                            | <code>ios default: Documents</code> |
-| **`headers`**             | <code><a href="#record">Record</a>&lt;string, string&gt;</code>  | request headers, when headers has value, url must be a http request with POST method |                                     |
-| **`body`**                | <code><a href="#record">Record</a>&lt;string, unknown&gt;</code> | request body, when body has value, url must be a http request width POST method      |                                     |
-| **`downloadTitle`**       | <code>string</code>                                              | Downloader Title， Only Android                                                       |                                     |
-| **`downloadDescription`** | <code>string</code>                                              | Downloader Description， Only Android                                                 |                                     |
+| Prop                      | Type                                                             | Description                                                                          | Default                                                              |
+| ------------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------------------------------ | -------------------------------------------------------------------- |
+| **`url`**                 | <code>string</code>                                              |                                                                                      |                                                                      |
+| **`fileName`**            | <code>string</code>                                              |                                                                                      |                                                                      |
+| **`destination`**         | <code><a href="#destination">Destination</a></code>              | Download file destination                                                            | <code>ios default: Document android default: External Storage</code> |
+| **`headers`**             | <code><a href="#record">Record</a>&lt;string, string&gt;</code>  | request headers, when headers has value, url must be a http request with POST method |                                                                      |
+| **`body`**                | <code><a href="#record">Record</a>&lt;string, unknown&gt;</code> | request body, when body has value, url must be a http request width POST method      |                                                                      |
+| **`downloadTitle`**       | <code>string</code>                                              | Downloader Title， Only Android                                                       |                                                                      |
+| **`downloadDescription`** | <code>string</code>                                              | Downloader Description， Only Android                                                 |                                                                      |
 
 
 #### CancelStatus
@@ -253,16 +253,14 @@ addListener(eventName: 'downloadProgress', listenerFunc: (progress: FileDownload
 
 download destination , on android default is "DOWNLOAD", on ios default is "DOCUMENT"
 
-<code>"DOCUMENT" | "EXTERNAL" | "EXTERNAL_STORAGE" | "DATA" | "CACHE"</code>
+<code>"DOCUMENT" | "EXTERNAL" | "EXTERNAL_STORAGE" | "DATA" | "CACHE" | "LIBRARY"</code>
 
 
 #### Record
 
 Construct a type with a set of properties K of type T
 
-<code>{
- [P in K]: T;
- }</code>
+<code>{ [P in K]: T; }</code>
 
 
 #### PermissionState

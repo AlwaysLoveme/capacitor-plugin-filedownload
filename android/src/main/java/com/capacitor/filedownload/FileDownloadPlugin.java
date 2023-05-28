@@ -80,12 +80,6 @@ public class FileDownloadPlugin extends Plugin {
     @PluginMethod
     public void download(PluginCall call) throws JSONException {
         downloadFile(call);
-//        Log.d("权限", getPermissionState(STORAGE) + "");
-//        if(getPermissionState(STORAGE) != PermissionState.GRANTED && getPermissionState(STORAGE) != PermissionState.DENIED) {
-//            requestPermissionForAlias(STORAGE, call, "permissionsCallback");
-//        } else {
-//
-//        }
     }
 
     @PluginMethod

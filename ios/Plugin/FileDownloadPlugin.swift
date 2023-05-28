@@ -20,7 +20,7 @@ public class FileDownloadPlugin: CAPPlugin {
             return
         }
         let fileName = call.getString("fileName") ?? ""
-        let destination = call.getString("destination") ?? "DOCUMENTS"
+        let destination = call.getString("destination") ?? "DOCUMENT"
         let headers = call.getObject("headers") as? [String: String] ?? [:]
         let body = call.getObject("body")
         let method = !headers.isEmpty || body != nil ? HTTPMethod.post : HTTPMethod.get
@@ -49,7 +49,7 @@ public class FileDownloadPlugin: CAPPlugin {
     
     func getFileDirectory(destination: String) -> FileManager.SearchPathDirectory {
         switch destination {
-        case "DOCUMENTS", "DATA", "EXTERNAL", "EXTERNAL_STORAGE":
+        case "DOCUMENT", "DATA", "EXTERNAL", "EXTERNAL_STORAGE":
             return .documentDirectory
         case "LIBRARY":
             return .libraryDirectory
