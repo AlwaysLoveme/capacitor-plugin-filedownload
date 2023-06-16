@@ -19,9 +19,9 @@
 a file download plugin for capacitor3.0+
 </p>
 
-> not support Capacitor5
+> since v2.0.0 supported Capacitor5
 
-> since version `1.0.6` , the `uri` option change to `url`
+> since version `1.0.6` , the `uri` option was changed to `url`
 
 ## Install
 
